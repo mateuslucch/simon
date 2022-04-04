@@ -1,7 +1,17 @@
 #include "SquareData.h"
 
 SquareData::SquareData()
-{    
+{
+}
+
+void SquareData::setPosition()
+{
+
+}
+
+int SquareData::getSize()
+{
+    return size;
 }
 
 void SquareData::drawSquare(bool changeColor, float deltaTime)

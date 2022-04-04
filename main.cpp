@@ -18,66 +18,76 @@ void StatusText(char const *text)
 int main()
 {
 
-    int windowDimensions[2]{640, 480};
-    int referenceWindowDimension[2]{640, 520};
+    int totalWindowDimensions[2]{800, 600};
+    // int totalWindowDimensions[2]{1024, 768};
 
-    InitWindow(windowDimensions[0], windowDimensions[1], "Simon");
+    InitWindow(totalWindowDimensions[0], totalWindowDimensions[1], "Simon");
     InitAudioDevice();
 
     Sound clickSound1 = LoadSound("Assets/Sound/Randomize1.wav");
     Sound clickSound2 = LoadSound("Assets/Sound/Randomize2.wav");
     Sound clickSound3 = LoadSound("Assets/Sound/Randomize3.wav");
     Sound clickSound4 = LoadSound("Assets/Sound/Randomize4.wav");
+    Sound soundSquareList[] =
+        {
+            clickSound1,
+            clickSound2,
+            clickSound3,
+            clickSound4
 
-    SetSoundVolume(clickSound1, 1);
+        };
+    // set all sounds volume
+    for (Sound sound : soundSquareList)
+    {
+        SetSoundVolume(sound, 1);
+    }
 
     // squares common values
-    int squareSize = 180;
-    int gap = 20;
-    int xMargin = (referenceWindowDimension[0] - squareSize * 2 - gap) / 2;
-    int yMargin = (referenceWindowDimension[1] - squareSize * 2 - gap) / 2;
+    int gap = 10;
+
+    // fixed margins for squares area
+    int leftMargin = 250;
+    // int rightMargin = 10; // not usefull
+    int upMargin = 50;
+    // int downMargin = 10; // not usefull
 
     SquareData yellowSquare;
     yellowSquare.mainColor = YELLOW;
     yellowSquare.secondaryColor = GOLD;
-    yellowSquare.pos.x = xMargin;
-    yellowSquare.pos.y = yMargin + squareSize + gap;
+    yellowSquare.pos.x = leftMargin + gap;
+    yellowSquare.pos.y = upMargin + yellowSquare.getSize() + 2 * gap;
     yellowSquare.buttonPushed = false;
     yellowSquare.clickSound = clickSound1;
-    // yellowSquare.nameSquare = "yellow";
-    yellowSquare.keyValue = 49;
+    yellowSquare.keyValue = 49; // num1
 
     SquareData blueSquare;
     blueSquare.mainColor = BLUE;
     blueSquare.secondaryColor = SKYBLUE;
-    blueSquare.pos.x = xMargin + squareSize + gap;
-    blueSquare.pos.y = yMargin + squareSize + gap;
+    blueSquare.pos.x = leftMargin + blueSquare.getSize() + 2 * gap;
+    blueSquare.pos.y = upMargin + blueSquare.getSize() + 2 * gap;
     blueSquare.buttonPushed = false;
     blueSquare.clickSound = clickSound2;
-    // blueSquare.nameSquare = "blue";
-    blueSquare.keyValue = 50;
+    blueSquare.keyValue = 50; // num2
 
     SquareData redSquare;
     redSquare.mainColor = RED;
     redSquare.secondaryColor = MAROON;
     // Note!! use CLITERAL(Color) late for more rgb colors!
     // redSquare.secondaryColor = CLITERAL(Color){50,20,33,200};
-    redSquare.pos.x = xMargin;
-    redSquare.pos.y = yMargin;
+    redSquare.pos.x = leftMargin + gap;
+    redSquare.pos.y = upMargin + gap;
     redSquare.buttonPushed = false;
     redSquare.clickSound = clickSound4;
-    // redSquare.nameSquare = "red";
-    redSquare.keyValue = 52;
+    redSquare.keyValue = 52; // num4
 
     SquareData greenSquare;
     greenSquare.mainColor = GREEN;
     greenSquare.secondaryColor = LIME;
-    greenSquare.pos.x = xMargin + squareSize + gap;
-    greenSquare.pos.y = yMargin;
+    greenSquare.pos.x = leftMargin + greenSquare.getSize() + 2 * gap;
+    greenSquare.pos.y = upMargin + gap;
     greenSquare.buttonPushed = false;
     greenSquare.clickSound = clickSound3;
-    // greenSquare.nameSquare = "green";
-    greenSquare.keyValue = 53;
+    greenSquare.keyValue = 53; // num5
 
     list<int> simonListInt{};
 
@@ -126,7 +136,7 @@ int main()
         BeginDrawing();
         if (gameMenu)
         {
-            DrawText("Push enter to start!", 55.f, windowDimensions[1] / 2 + 20.f, 50, RED);
+            DrawText("Push enter to start!", 55.f, totalWindowDimensions[1] / 2 + 20.f, 50, RED);
             if (IsKeyPressed(KEY_ENTER) && gameMenu == true)
             {
                 simonSort = true;
@@ -137,9 +147,9 @@ int main()
         }
         else
         {
-            // DrawText("Here can be the score!", 55.f, 20.f, 40, RED);
-            DrawText(TextFormat("Player Chances:"), 5.f, windowDimensions[1] / 2 - 10.f, 15, RED);
-            DrawText(TextFormat("%d", playerChances), 40.f, windowDimensions[1] / 2 + 20.f, 30, RED);
+            const char *text = "Player Chances:";
+            DrawText(TextFormat(text), MeasureText(text, 20) / 2, totalWindowDimensions[1] / 2 - 10.f, 20, RED);
+            DrawText(TextFormat("%d", playerChances), 125.f, totalWindowDimensions[1] / 2 + 20.f, 30, RED);
 
             // Change yellow square
 
@@ -153,7 +163,6 @@ int main()
 
             if (simonSort)
             {
-
                 playerTurn = false;
 
                 // sort number
@@ -175,7 +184,6 @@ int main()
             // play squares auto
             if (simonTurn)
             {
-
                 StatusText("Simon Turn");
                 simonTimeCount += dT;
                 if (animCount == (int)simonListInt.size())
@@ -188,7 +196,7 @@ int main()
                 {
                     if (simonTimeCount > simonSpeed)
                     {
-                        DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, windowDimensions[1] / 2 + 60.f, 30, RED);
+                        DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, totalWindowDimensions[1] / 2 + 60.f, 30, RED);
                         list<int>::iterator it = simonListInt.begin();
                         advance(it, animCount);
                         squareList[*it].drawSquare(true, dT);
@@ -198,8 +206,8 @@ int main()
                 }
             }
 
-            DrawText(TextFormat("Time:"), 5.f, windowDimensions[1] / 2 + 50.f, 15, RED);
-            DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, windowDimensions[1] / 2 + 60.f, 30, RED);
+            DrawText(TextFormat("Time:"), 5.f, totalWindowDimensions[1] / 2 + 50.f, 15, RED);
+            DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, totalWindowDimensions[1] / 2 + 60.f, 30, RED);
 
             if (playerTurn)
             {
@@ -260,7 +268,7 @@ int main()
                                 //  player loose path
                                 if (playerChances == 0)
                                 {
-                                    // _sleep lock things
+                                    // _sleep lock things, not good
                                     //_sleep(3000);
                                     gameOver = true;
                                     StatusText("Game Over");
@@ -274,8 +282,6 @@ int main()
                                 }
                                 // delay again to game over
                             }
-
-                            // reset things and "go back" to start screen
                         }
                         // exit game
                         else if (keyPressed == 113) // 113 = "q", not "Q"
