@@ -4,14 +4,9 @@ SquareData::SquareData()
 {
 }
 
-void SquareData::setPosition()
-{
-
-}
-
 int SquareData::getSize()
 {
-    return size;
+    return squareSize;
 }
 
 void SquareData::drawSquare(bool changeColor, float deltaTime)
@@ -23,7 +18,7 @@ void SquareData::drawSquare(bool changeColor, float deltaTime)
     }
     if (buttonPushed == true)
     {
-        DrawRectangle(pos.x, pos.y, size, size, secondaryColor);
+        DrawRectangle(pos.x, pos.y, squareSize, squareSize, secondaryColor);
         runningTime += deltaTime;
         if (runningTime > colorBackTime)
         {
@@ -33,6 +28,9 @@ void SquareData::drawSquare(bool changeColor, float deltaTime)
     }
     else
     {
-        DrawRectangle(pos.x, pos.y, size, size, mainColor);
+        DrawRectangle(pos.x, pos.y, squareSize, squareSize, mainColor);
     }
+
+    int fontSize = 100;
+    DrawText(TextFormat(keyValue), pos.x + squareSize / 2 - MeasureText(keyValue, fontSize) / 2, pos.y + squareSize / 2 - fontSize / 2, fontSize, secondaryColor);
 };

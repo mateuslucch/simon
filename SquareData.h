@@ -5,20 +5,18 @@ class SquareData
 {
 public:
     SquareData();
-    void drawSquare(bool changeColor, float tick);
-    void setPosition();
+    void drawSquare(bool changeColor, float deltaTime);
     int getSize();
     Vector2 pos;
     Color mainColor;
     Color secondaryColor;
     bool buttonPushed = false;
     Sound clickSound;
-    // not using, could be usefull?
-    // string nameSquare; // not working here, need a library?
-    int keyValue;
+    int keyCodeValue;
+    char const *keyValue;
 
 private:
-    int size{250};
+    int squareSize{250};
     float colorBackTime{0.3f};
     float runningTime{};
 };

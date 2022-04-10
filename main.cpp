@@ -7,12 +7,18 @@
 
 // my classes
 #include "SquareData.h"
+#include "Button.h"
 
 using namespace std;
 
-void StatusText(char const *text)
+// void StatusText(char const *text)
+// {
+//     DrawText(text, 55.f, 20.f, 40, RED);
+// }
+
+void CenterTextHorizontal(char const *text, float centerPosPixels, float verticalPos, int fontSize, Color color)
 {
-    DrawText(text, 55.f, 20.f, 40, RED);
+    DrawText(TextFormat(text), centerPosPixels - MeasureText(text, fontSize) / 2, verticalPos, fontSize, color);
 }
 
 int main()
@@ -33,10 +39,11 @@ int main()
             clickSound1,
             clickSound2,
             clickSound3,
-            clickSound4
-
-        };
+            clickSound4};
+    Sound menuNavSound = LoadSound("Assets/Sound/MenuNavigation.wav");
+    
     // set all sounds volume
+    SetSoundVolume(menuNavSound, 1);
     for (Sound sound : soundSquareList)
     {
         SetSoundVolume(sound, 1);
@@ -51,6 +58,7 @@ int main()
     int upMargin = 50;
     // int downMargin = 10; // not usefull
 
+    // SQUARES DATA
     SquareData yellowSquare;
     yellowSquare.mainColor = YELLOW;
     yellowSquare.secondaryColor = GOLD;
@@ -58,7 +66,8 @@ int main()
     yellowSquare.pos.y = upMargin + yellowSquare.getSize() + 2 * gap;
     yellowSquare.buttonPushed = false;
     yellowSquare.clickSound = clickSound1;
-    yellowSquare.keyValue = 49; // num1
+    yellowSquare.keyCodeValue = 49; // num1
+    yellowSquare.keyValue = "1";
 
     SquareData blueSquare;
     blueSquare.mainColor = BLUE;
@@ -67,7 +76,8 @@ int main()
     blueSquare.pos.y = upMargin + blueSquare.getSize() + 2 * gap;
     blueSquare.buttonPushed = false;
     blueSquare.clickSound = clickSound2;
-    blueSquare.keyValue = 50; // num2
+    blueSquare.keyCodeValue = 50; // num2
+    blueSquare.keyValue = "2";
 
     SquareData redSquare;
     redSquare.mainColor = RED;
@@ -78,7 +88,8 @@ int main()
     redSquare.pos.y = upMargin + gap;
     redSquare.buttonPushed = false;
     redSquare.clickSound = clickSound4;
-    redSquare.keyValue = 52; // num4
+    redSquare.keyCodeValue = 52; // num4
+    redSquare.keyValue = "4";
 
     SquareData greenSquare;
     greenSquare.mainColor = GREEN;
@@ -87,15 +98,57 @@ int main()
     greenSquare.pos.y = upMargin + gap;
     greenSquare.buttonPushed = false;
     greenSquare.clickSound = clickSound3;
-    greenSquare.keyValue = 53; // num5
-
-    list<int> simonListInt{};
+    greenSquare.keyCodeValue = 53; // num5
+    greenSquare.keyValue = "5";
 
     SquareData squareList[] = {
         yellowSquare,
         blueSquare,
         redSquare,
         greenSquare};
+
+    // MENU BUTTONS
+    int buttonsXSize = 200;
+    int buttonsYSize = 60;
+    int buttonsFontSize = 50;
+
+    Button easyButton;
+    easyButton.size.x = buttonsXSize;
+    easyButton.size.y = buttonsYSize;
+    easyButton.pos.x = 400.f - easyButton.size.x / 2;
+    easyButton.pos.y = 200 - easyButton.size.y / 2;
+    easyButton.unselectedColor = GREEN;
+    easyButton.selectedColor = BLUE;
+    easyButton.text = "Easy";
+    easyButton.fontSize = buttonsFontSize;
+
+    Button mediumButton;
+    mediumButton.size.x = buttonsXSize;
+    mediumButton.size.y = buttonsYSize;
+    mediumButton.pos.x = 400.f - mediumButton.size.x / 2;
+    mediumButton.pos.y = 300 - mediumButton.size.y / 2;
+    mediumButton.unselectedColor = GREEN;
+    mediumButton.selectedColor = BLUE;
+    mediumButton.text = "Medium";
+    mediumButton.fontSize = buttonsFontSize;
+
+    Button hardButton;
+    hardButton.size.x = buttonsXSize;
+    hardButton.size.y = buttonsYSize;
+    hardButton.pos.x = 400.f - hardButton.size.x / 2;
+    hardButton.pos.y = 400 - hardButton.size.y / 2;
+    hardButton.unselectedColor = GREEN;
+    hardButton.selectedColor = BLUE;
+    hardButton.text = "Hard";
+    hardButton.fontSize = buttonsFontSize;
+
+    Button menuButtonsList[]{
+        easyButton,
+        mediumButton,
+        hardButton};
+
+    int menuBtnListSize = sizeof(menuButtonsList) / sizeof(Button);
+    int menuNavigation{};
 
     int maxChances = 6;
     int playerChances = maxChances;
@@ -104,6 +157,7 @@ int main()
     bool simonSort = false;
     bool playerTurn = false;
     bool simonTurn = false;
+    list<int> simonListInt{};
 
     float simonTimeCount = 0.f;
     const float simonSpeed = 0.6f;
@@ -115,7 +169,7 @@ int main()
     default_random_engine simon_random; // default engine
     uniform_int_distribution<int> int_distribution(0, sizeArray - 1);
 
-    // example pushing list
+    // example pushing list use as reference for something
     list<int> testListInt{};
     for (int i = 0; i < 10; i++)
     {
@@ -123,7 +177,7 @@ int main()
     }
     for (int listValue : testListInt)
     {
-        printf("%d \n", listValue);
+        //printf("%d \n", listValue);
     }
     // end example
 
@@ -136,7 +190,49 @@ int main()
         BeginDrawing();
         if (gameMenu)
         {
-            DrawText("Push enter to start!", 55.f, totalWindowDimensions[1] / 2 + 20.f, 50, RED);
+            CenterTextHorizontal("Push enter to start!", 400.f, 50.f - 50.f / 2, 50, RED);
+
+            if (IsKeyPressed(KEY_UP))
+            {
+                PlaySound(menuNavSound);
+                menuNavigation--;
+                if (menuNavigation < 0)
+                {
+                    menuNavigation = menuBtnListSize - 1;
+                }
+            }
+            if (IsKeyPressed(KEY_DOWN))
+            {
+                PlaySound(menuNavSound);
+                menuNavigation++;
+                if (menuNavigation > menuBtnListSize - 1)
+                {
+                    menuNavigation = 0;
+                }
+            }
+
+            switch (menuNavigation)
+            {
+            case 0:
+                easyButton.drawButton(true);
+                mediumButton.drawButton(false);
+                hardButton.drawButton(false);
+                break;
+            case 1:
+                easyButton.drawButton(false);
+                mediumButton.drawButton(true);
+                hardButton.drawButton(false);
+                break;
+            case 2:
+                easyButton.drawButton(false);
+                mediumButton.drawButton(false);
+                hardButton.drawButton(true);
+                break;
+
+            default:
+                break;
+            }
+
             if (IsKeyPressed(KEY_ENTER) && gameMenu == true)
             {
                 simonSort = true;
@@ -147,11 +243,9 @@ int main()
         }
         else
         {
-            const char *text = "Player Chances:";
-            DrawText(TextFormat(text), MeasureText(text, 20) / 2, totalWindowDimensions[1] / 2 - 10.f, 20, RED);
-            DrawText(TextFormat("%d", playerChances), 125.f, totalWindowDimensions[1] / 2 + 20.f, 30, RED);
-
-            // Change yellow square
+            // Left block UI
+            CenterTextHorizontal("Player Chances", 125.f, totalWindowDimensions[1] / 2 - 10.f, 20, RED);
+            CenterTextHorizontal(TextFormat("%d", playerChances), 125.f, totalWindowDimensions[1] / 2 + 20.f, 30, RED);
 
             // Draw Squares
             yellowSquare.drawSquare(false, dT);
@@ -159,8 +253,7 @@ int main()
             redSquare.drawSquare(false, dT);
             greenSquare.drawSquare(false, dT);
 
-            // Change squares color
-
+            // simon sort a new number
             if (simonSort)
             {
                 playerTurn = false;
@@ -181,10 +274,11 @@ int main()
                 simonTurn = true;
             }
 
-            // play squares auto
+            // simon play the sequence of numbers
             if (simonTurn)
             {
-                StatusText("Simon Turn");
+                CenterTextHorizontal("Simon Turn", 525.f, 10.f, 40, RED);
+
                 simonTimeCount += dT;
                 if (animCount == (int)simonListInt.size())
                 {
@@ -196,7 +290,6 @@ int main()
                 {
                     if (simonTimeCount > simonSpeed)
                     {
-                        DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, totalWindowDimensions[1] / 2 + 60.f, 30, RED);
                         list<int>::iterator it = simonListInt.begin();
                         advance(it, animCount);
                         squareList[*it].drawSquare(true, dT);
@@ -206,12 +299,12 @@ int main()
                 }
             }
 
-            DrawText(TextFormat("Time:"), 5.f, totalWindowDimensions[1] / 2 + 50.f, 15, RED);
-            DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, totalWindowDimensions[1] / 2 + 60.f, 30, RED);
+            // DrawText(TextFormat("Time:"), 5.f, totalWindowDimensions[1] / 2 + 50.f, 15, RED);
+            // DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, totalWindowDimensions[1] / 2 + 60.f, 30, RED);
 
             if (playerTurn)
             {
-                StatusText("Player Turn");
+                CenterTextHorizontal("Player Turn", 525.f, 10.f, 40, RED);
                 int keyPressed{};
 
                 if (GetKeyPressed())
@@ -237,15 +330,15 @@ int main()
                         }
 
                         // test
-                        if (keyPressed == yellowSquare.keyValue ||
-                            keyPressed == blueSquare.keyValue ||
-                            keyPressed == greenSquare.keyValue ||
-                            keyPressed == redSquare.keyValue)
+                        if (keyPressed == yellowSquare.keyCodeValue ||
+                            keyPressed == blueSquare.keyCodeValue ||
+                            keyPressed == greenSquare.keyCodeValue ||
+                            keyPressed == redSquare.keyCodeValue)
                         {
                             list<int>::iterator it = simonListInt.begin();
                             advance(it, playerPushBtnCount);
 
-                            if (squareList[*it].keyValue == keyPressed)
+                            if (squareList[*it].keyCodeValue == keyPressed)
                             {
                                 playerPushBtnCount++;
                                 printf("Right key! \n");
@@ -271,7 +364,7 @@ int main()
                                     // _sleep lock things, not good
                                     //_sleep(3000);
                                     gameOver = true;
-                                    StatusText("Game Over");
+                                    CenterTextHorizontal("Game Over!", 525.f, 20.f, 40, RED);
                                     changeStateDelay += dT;
                                     playerTurn = false;
                                     gameMenu = true;
