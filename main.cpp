@@ -4,6 +4,7 @@
 #include <random>
 #include <list>
 #include <thread>
+#include <experimental/random>
 
 #include "SquareData.h"
 //#include "Button.h"
@@ -128,8 +129,6 @@ int main()
     int animCount{};
 
     int sizeArray = sizeof(squareList) / sizeof(SquareData);
-    default_random_engine simon_random; // default engine
-    uniform_int_distribution<int> int_distribution(0, sizeArray - 1);
 
     // // example pushing values to list, use as reference for something
     // list<int> testListInt{};
@@ -157,8 +156,10 @@ int main()
 
             if (IsKeyPressed(KEY_ENTER) && gameMenuRun == true)
             {
+                auto i = time(0);
+                srand(i);
+
                 simonSpeed = gameMenu.difficultyLevel();
-                // get difficulty here???
                 simonSort = true;
                 gameMenuRun = false;
                 gameOver = false;
@@ -176,8 +177,6 @@ int main()
             CenterTextHorizontal("Player Chances:", 125.f, 330.f, 30, RED);
             CenterTextHorizontal(TextFormat("%d", playerChances), 125.f, 365.f, 30, RED);
 
-           
-
             // Draw Squares
             yellowSquare.drawSquare(false, dT);
             blueSquare.drawSquare(false, dT);
@@ -187,18 +186,23 @@ int main()
             // simon sort a new number
             if (simonSort)
             {
+
                 playerTurn = false;
 
                 // sort number
                 int randomValue{};
-                randomValue = int_distribution(simon_random);
+
+                randomValue = rand() % (sizeArray);
+                
                 // assing to list
                 printf("Adding value to list \n");
                 simonListInt.push_back(randomValue);
+
                 printf("New list: \n");
+                
                 for (int listValue : simonListInt)
-                {
-                    printf(" %d \n", listValue);
+                {                    
+                    printf("%c \n", squareList[listValue].getKeyValue());
                 }
                 // end number choice
                 simonSort = false;

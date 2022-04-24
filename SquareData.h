@@ -7,6 +7,7 @@ public:
     SquareData();
     void drawSquare(bool changeColor, float deltaTime);
     int getSize();
+    char getKeyValue();
     Vector2 pos;
     Color mainColor;
     Color secondaryColor;

@@ -9,6 +9,11 @@ int SquareData::getSize()
     return squareSize;
 }
 
+char SquareData::getKeyValue()
+{
+    return *keyValue;
+}
+
 void SquareData::drawSquare(bool changeColor, float deltaTime)
 {
     if (changeColor)
