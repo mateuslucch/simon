@@ -3,33 +3,6 @@
 
 Menu::Menu()
 {
-    easyButton.size.x = buttonsXSize;
-    easyButton.size.y = buttonsYSize;
-    easyButton.pos.x = 400.f - easyButton.size.x / 2;
-    easyButton.pos.y = 200 - easyButton.size.y / 2;
-    easyButton.unselectedColor = GREEN;
-    easyButton.selectedColor = BLUE;
-    easyButton.text = "Easy";
-    easyButton.fontSize = buttonsFontSize;
-
-    mediumButton.size.x = buttonsXSize;
-    mediumButton.size.y = buttonsYSize;
-    mediumButton.pos.x = 400.f - mediumButton.size.x / 2;
-    mediumButton.pos.y = 300 - mediumButton.size.y / 2;
-    mediumButton.unselectedColor = GREEN;
-    mediumButton.selectedColor = BLUE;
-    mediumButton.text = "Medium";
-    mediumButton.fontSize = buttonsFontSize;
-
-    hardButton.size.x = buttonsXSize;
-    hardButton.size.y = buttonsYSize;
-    hardButton.pos.x = 400.f - hardButton.size.x / 2;
-    hardButton.pos.y = 400 - hardButton.size.y / 2;
-    hardButton.unselectedColor = GREEN;
-    hardButton.selectedColor = BLUE;
-    hardButton.text = "Hard";
-    hardButton.fontSize = buttonsFontSize;
-
     Button menuButtonsList[]{
         easyButton,
         mediumButton,
@@ -62,7 +35,12 @@ float Menu::difficultyLevel()
 
 void Menu::drawMenu()
 {
+    // Title
     centerTextHorizontal("SIMON IS ASKING POLITELY...", 400.f, 50.f - 50.f / 2, 40, RED);
+
+    // Instructions
+    centerTextHorizontal("Move arrows up and down to select the level of difficult.", 400.f, 120.f - 50.f / 2, 24, BLACK);
+    centerTextHorizontal("Push \"Enter\" to start", 400.f, 154.f - 50.f / 2, 24, BLACK);
 
     if (IsKeyPressed(KEY_UP))
     {

@@ -4,6 +4,35 @@ SquareData::SquareData()
 {
 }
 
+SquareData::SquareData(int _posX, int _posY, int _squareSize, Color _mainColor, Color _secondaryColor, bool _buttonPushed, Sound _clickSound, int _keyCodeValue, char const *_keyValue)
+{
+    pos.x = _posX;
+    pos.y = _posY;
+    squareSize = _squareSize;
+    mainColor = _mainColor;
+    secondaryColor = _secondaryColor;
+    buttonPushed = _buttonPushed;
+    clickSound = _clickSound;
+    keyCodeValue = _keyCodeValue;
+    keyValue = _keyValue;    
+}
+
+SquareData::SquareData(int _squareSize)
+{
+    squareSize = _squareSize;
+}
+
+// teste
+SquareData::SquareData(Color _mainColor, Color _secondaryColor, bool _buttonPushed, Sound _clickSound, int _keyCodeValue, char const *_keyValue)
+{
+    mainColor = _mainColor;
+    secondaryColor = _secondaryColor;
+    buttonPushed = _buttonPushed;
+    clickSound = _clickSound;
+    keyCodeValue = _keyCodeValue;
+    keyValue = _keyValue;
+}
+
 int SquareData::getSize()
 {
     return squareSize;

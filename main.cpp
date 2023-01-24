@@ -6,15 +6,9 @@
 #include <thread>
 
 #include "SquareData.h"
-//#include "Button.h"
 #include "Menu.h"
 
 using namespace std;
-
-// void StatusText(char const *text)
-// {
-//     DrawText(text, 55.f, 20.f, 40, RED);
-// }
 
 void CenterTextHorizontal(char const *text, float centerPosPixels, float verticalPos, int fontSize, Color color)
 {
@@ -50,57 +44,62 @@ int main()
         SetSoundVolume(sound, 1);
     }
 
+    // UI
+    Color clearBackgroundColor = GRAY;
+
     // squares common values
     int gap{10};
-
     // fixed margins for squares area
     int leftMargin{250};
     // int rightMargin = 10; // not usefull
     int upMargin{50};
     // int downMargin = 10; // not usefull
+    int squareSize{250};
 
     // SQUARES DATA
-    SquareData yellowSquare;
-    yellowSquare.mainColor = YELLOW;
-    yellowSquare.secondaryColor = GOLD;
-    yellowSquare.pos.x = leftMargin + gap;
-    yellowSquare.pos.y = upMargin + yellowSquare.getSize() + 2 * gap;
-    yellowSquare.buttonPushed = false;
-    yellowSquare.clickSound = clickSound1;
-    yellowSquare.keyCodeValue = 49; // num1
-    yellowSquare.keyValue = "1";
+    SquareData yellowSquare(
+        leftMargin + gap,
+        upMargin + squareSize + 2 * gap,
+        squareSize,
+        YELLOW,
+        GOLD,
+        false,
+        clickSound1,
+        49,
+        "1");
 
-    SquareData blueSquare;
-    blueSquare.mainColor = BLUE;
-    blueSquare.secondaryColor = SKYBLUE;
-    blueSquare.pos.x = leftMargin + blueSquare.getSize() + 2 * gap;
-    blueSquare.pos.y = upMargin + blueSquare.getSize() + 2 * gap;
-    blueSquare.buttonPushed = false;
-    blueSquare.clickSound = clickSound2;
-    blueSquare.keyCodeValue = 50; // num2
-    blueSquare.keyValue = "2";
+    SquareData blueSquare(
+        leftMargin + squareSize + 2 * gap,
+        upMargin + squareSize + 2 * gap,
+        squareSize,
+        BLUE,
+        SKYBLUE,
+        false,
+        clickSound2,
+        50,
+        "2");
 
-    SquareData redSquare;
-    redSquare.mainColor = RED;
-    redSquare.secondaryColor = MAROON;
-    // Note!! use CLITERAL(Color) late for more rgb colors!
-    // redSquare.secondaryColor = CLITERAL(Color){50,20,33,200};
-    redSquare.pos.x = leftMargin + gap;
-    redSquare.pos.y = upMargin + gap;
-    redSquare.buttonPushed = false;
-    redSquare.clickSound = clickSound4;
-    redSquare.keyCodeValue = 52; // num4
-    redSquare.keyValue = "4";
+    SquareData redSquare(
+        leftMargin + gap,
+        upMargin + gap,
+        squareSize,
+        RED,
+        MAROON,
+        false,
+        clickSound4,
+        52,
+        "4");
 
-    SquareData greenSquare;
-    greenSquare.mainColor = GREEN;
-    greenSquare.secondaryColor = LIME;
-    greenSquare.pos.x = leftMargin + greenSquare.getSize() + 2 * gap;
-    greenSquare.pos.y = upMargin + gap;
-    greenSquare.buttonPushed = false;
-    greenSquare.clickSound = clickSound3;
-    greenSquare.keyCodeValue = 53; // num5
-    greenSquare.keyValue = "5";
+    SquareData greenSquare(
+        leftMargin + squareSize + 2 * gap,
+        upMargin + gap,
+        squareSize,
+        GREEN,
+        LIME,
+        false,
+        clickSound3,
+        53,
+        "5");
 
     SquareData squareList[] = {
         yellowSquare,
@@ -111,6 +110,7 @@ int main()
     // Gamemenu
     Menu gameMenu;
 
+    // Number of player chances
     int maxChances{4};
     int playerChances = maxChances;
     int score{0};
@@ -146,9 +146,35 @@ int main()
     {
         const float dT{GetFrameTime()};
 
-        ClearBackground(WHITE);
+        ClearBackground(clearBackgroundColor);
         BeginDrawing();
 
+        // Draw Borders
+        int lineThickness{5};
+        // UI Lines
+        // up, down, left, right
+        DrawRectangle(0,
+                      0,
+                      totalWindowDimensions[0],
+                      lineThickness,
+                      BLACK);
+        DrawRectangle(0,
+                      totalWindowDimensions[1] - lineThickness,
+                      totalWindowDimensions[0],
+                      lineThickness,
+                      BLACK);
+        DrawRectangle(0,
+                      0,
+                      lineThickness,
+                      totalWindowDimensions[1],
+                      BLACK);
+        DrawRectangle(totalWindowDimensions[0] - lineThickness,
+                      lineThickness,
+                      lineThickness,
+                      totalWindowDimensions[1],
+                      BLACK);
+
+        // Game Menu
         if (gameMenuRun)
         {
             gameMenu.drawMenu();
@@ -166,23 +192,33 @@ int main()
                 score = 0;
             }
         }
+
         // game started
         else
         {
-            CenterTextHorizontal("Score:", 125.f, 230.f, 30, RED);
-            CenterTextHorizontal(TextFormat("%d", score), 125.f, 265.f, 30, RED);
+             DrawRectangle(250,
+                      0,
+                      lineThickness,
+                      totalWindowDimensions[1],
+                      BLACK);
 
             // Left block UI
-            CenterTextHorizontal("Player Chances:", 125.f, 330.f, 30, RED);
+            CenterTextHorizontal("Score:", 125.f, 230.f, 25, RED);
+            CenterTextHorizontal(TextFormat("%d", score), 125.f, 265.f, 30, RED);
+
+            CenterTextHorizontal("Player Chances:", 125.f, 330.f, 25, RED);
             CenterTextHorizontal(TextFormat("%d", playerChances), 125.f, 365.f, 30, RED);
 
+            // end Left block UI
+
+            // right block UI and gameplay logic
             // Draw Squares
             yellowSquare.drawSquare(false, dT);
             blueSquare.drawSquare(false, dT);
             redSquare.drawSquare(false, dT);
             greenSquare.drawSquare(false, dT);
 
-            // simon sort a new number
+            // simon sort a new number, no visual feedback here
             if (simonSort)
             {
 
@@ -192,15 +228,15 @@ int main()
                 int randomValue{};
 
                 randomValue = rand() % (sizeArray);
-                
+
                 // assing to list
                 printf("Adding value to list \n");
                 simonListInt.push_back(randomValue);
 
                 printf("New list: \n");
-                
+
                 for (int listValue : simonListInt)
-                {                    
+                {
                     printf("%c \n", squareList[listValue].getKeyValue());
                 }
                 // end number choice
@@ -208,7 +244,7 @@ int main()
                 simonTurn = true;
             }
 
-            // simon play the sequence of numbers
+            // simon play the sequence of numbers, visual feedback
             if (simonTurn)
             {
                 CenterTextHorizontal("Simon Turn", 525.f, 10.f, 40, RED);
@@ -246,7 +282,7 @@ int main()
                     keyPressed = GetCharPressed();
                     if (!gameOver)
                     {
-                        // num1 = 49, num2 = 50, num4 = 52, num5 = 53
+                        // num1 = 49, num2 = 50, num4 = 52, num5 = 53, numerical key
                         switch (keyPressed)
                         {
                         case 49:
@@ -289,7 +325,7 @@ int main()
                             }
                             else
                             {
-                                printf("Wrong square! \n");
+                                printf("Wrong key! \n");
                                 playerChances--;
                                 // play simon again
                                 playerTurn = false;

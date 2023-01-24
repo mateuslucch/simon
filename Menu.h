@@ -14,14 +14,36 @@ private:
     int fontSize{10};
     float backgroundBorder{10};
     int buttonsXSize{200};
-    int buttonsYSize = 60;
-    int buttonsFontSize = 50;
+    int buttonsYSize{60};
+    int buttonsFontSize{50};
 
     Sound menuNavSound = LoadSound("Assets/Sound/MenuNavigation.wav");
 
-    Button easyButton;
-    Button mediumButton;
-    Button hardButton;
+    // Menu Buttons
+    Button easyButton = Button(400.f - buttonsXSize / 2,
+                               200 - buttonsYSize / 2,
+                               buttonsXSize,
+                               buttonsYSize,
+                               BLUE,
+                               GREEN,
+                               "Easy",
+                               buttonsFontSize);
+    Button mediumButton = Button(400.f - buttonsXSize / 2,
+                                 300 - buttonsYSize / 2,
+                                 buttonsXSize,
+                                 buttonsYSize,
+                                 BLUE,
+                                 GREEN,
+                                 "Medium",
+                                 buttonsFontSize);
+    Button hardButton = Button(400.f - buttonsXSize / 2,
+                               400 - buttonsYSize / 2,
+                               buttonsXSize,
+                               buttonsYSize,
+                               BLUE,
+                               GREEN,
+                               "Hard",
+                               buttonsFontSize);
 
     int menuNavigation{};
     int menuBtnListSize{};
