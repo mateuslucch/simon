@@ -7,7 +7,7 @@ public:
     Menu();
     void drawMenu();
     void centerTextHorizontal(char const *text, float centerPosPixels, float verticalPos, int fontSize, Color color);
-    float difficultyLevel();
+    float difficultyLevelParameters();
 
 private:
     float simonTime{1};
@@ -17,7 +17,7 @@ private:
     int buttonsYSize{60};
     int buttonsFontSize{50};
 
-    Sound menuNavSound = LoadSound("Assets/Sound/MenuNavigation.wav");
+    Sound menuNavigationSound = LoadSound("Assets/Sound/MenuNavigation.wav");
 
     // Menu Buttons
     Button easyButton = Button(400.f - buttonsXSize / 2,
@@ -45,6 +45,6 @@ private:
                                "Hard",
                                buttonsFontSize);
 
-    int menuNavigation{};
-    int menuBtnListSize{};
+    int menuNavigationIndex{};
+    int menuButtonListSize{};
 };

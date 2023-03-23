@@ -8,7 +8,7 @@ Menu::Menu()
         mediumButton,
         hardButton};
 
-    menuBtnListSize = sizeof(menuButtonsList) / sizeof(Button);
+    menuButtonListSize = sizeof(menuButtonsList) / sizeof(Button);
 }
 
 void Menu::centerTextHorizontal(char const *text, float centerPosPixels, float verticalPos, int fontSize, Color color)
@@ -16,9 +16,9 @@ void Menu::centerTextHorizontal(char const *text, float centerPosPixels, float v
     DrawText(TextFormat(text), centerPosPixels - MeasureText(text, fontSize) / 2, verticalPos, fontSize, color);
 }
 
-float Menu::difficultyLevel()
+float Menu::difficultyLevelParameters()
 {
-    switch (menuNavigation)
+    switch (menuNavigationIndex)
     {
     case 0:
         simonTime = 0.6f;
@@ -45,24 +45,24 @@ void Menu::drawMenu()
     if (IsKeyPressed(KEY_UP))
     {
 
-        PlaySound(menuNavSound);
-        menuNavigation--;
-        if (menuNavigation < 0)
+        PlaySound(menuNavigationSound);
+        menuNavigationIndex--;
+        if (menuNavigationIndex < 0)
         {
-            menuNavigation = menuBtnListSize - 1;
+            menuNavigationIndex = menuButtonListSize - 1;
         }
     }
     if (IsKeyPressed(KEY_DOWN))
     {
-        PlaySound(menuNavSound);
-        menuNavigation++;
-        if (menuNavigation > menuBtnListSize - 1)
+        PlaySound(menuNavigationSound);
+        menuNavigationIndex++;
+        if (menuNavigationIndex > menuButtonListSize - 1)
         {
-            menuNavigation = 0;
+            menuNavigationIndex = 0;
         }
     }
 
-    switch (menuNavigation)
+    switch (menuNavigationIndex)
     {
     case 0:
         easyButton.drawButton(true);

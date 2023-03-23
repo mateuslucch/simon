@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void CenterTextHorizontal(char const *text, float centerPosPixels, float verticalPos, int fontSize, Color color)
+void DrawTextHorizontal(char const *text, float centerPosPixels, float verticalPos, int fontSize, Color color)
 {
     DrawText(TextFormat(text), centerPosPixels - MeasureText(text, fontSize) / 2, verticalPos, fontSize, color);
 }
@@ -116,9 +116,9 @@ int main()
     int score{0};
     bool gameMenuRun = true;
     bool gameOver = false;
-    bool simonSort = false;
+    bool simonSortNumber = false;
     bool playerTurn = false;
-    bool simonTurn = false;
+    bool simonPlaySequence = false;
     list<int> simonListInt{};
 
     float simonTimeCount{0.f};
@@ -127,19 +127,7 @@ int main()
     float changeStateDelay{0.f};
     int animCount{};
 
-    int sizeArray = sizeof(squareList) / sizeof(SquareData);
-
-    // // example pushing values to list, use as reference for something
-    // list<int> testListInt{};
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     testListInt.push_back(i);
-    // }
-    // for (int listValue : testListInt)
-    // {
-    //     //printf("%d \n", listValue);
-    // }
-    // // end example
+    int numberSquares = sizeof(squareList) / sizeof(SquareData);
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -184,8 +172,8 @@ int main()
                 auto i = time(0);
                 srand(i);
 
-                simonSpeed = gameMenu.difficultyLevel();
-                simonSort = true;
+                simonSpeed = gameMenu.difficultyLevelParameters();
+                simonSortNumber = true;
                 gameMenuRun = false;
                 gameOver = false;
                 changeStateDelay = 0;
@@ -196,18 +184,18 @@ int main()
         // game started
         else
         {
-             DrawRectangle(250,
-                      0,
-                      lineThickness,
-                      totalWindowDimensions[1],
-                      BLACK);
+            DrawRectangle(250,
+                          0,
+                          lineThickness,
+                          totalWindowDimensions[1],
+                          BLACK);
 
             // Left block UI
-            CenterTextHorizontal("Score:", 125.f, 230.f, 25, RED);
-            CenterTextHorizontal(TextFormat("%d", score), 125.f, 265.f, 30, RED);
+            DrawTextHorizontal("Score:", 125.f, 230.f, 25, RED);
+            DrawTextHorizontal(TextFormat("%d", score), 125.f, 265.f, 30, RED);
 
-            CenterTextHorizontal("Player Chances:", 125.f, 330.f, 25, RED);
-            CenterTextHorizontal(TextFormat("%d", playerChances), 125.f, 365.f, 30, RED);
+            DrawTextHorizontal("Player Chances:", 125.f, 330.f, 25, RED);
+            DrawTextHorizontal(TextFormat("%d", playerChances), 125.f, 365.f, 30, RED);
 
             // end Left block UI
 
@@ -219,40 +207,38 @@ int main()
             greenSquare.drawSquare(false, dT);
 
             // simon sort a new number, no visual feedback here
-            if (simonSort)
+            if (simonSortNumber)
             {
 
                 playerTurn = false;
 
-                // sort number
                 int randomValue{};
 
-                randomValue = rand() % (sizeArray);
+                randomValue = rand() % (numberSquares);
 
-                // assing to list
-                printf("Adding value to list \n");
+                // printf("Adding number to list \n");
                 simonListInt.push_back(randomValue);
 
-                printf("New list: \n");
+                // printf("New list: \n");
 
-                for (int listValue : simonListInt)
-                {
-                    printf("%c \n", squareList[listValue].getKeyValue());
-                }
-                // end number choice
-                simonSort = false;
-                simonTurn = true;
+                // for (int listValue : simonListInt)
+                // {
+                //     printf("%c \n", squareList[listValue].getKeyValue());
+                // }
+
+                simonSortNumber = false;
+                simonPlaySequence = true;
             }
 
             // simon play the sequence of numbers, visual feedback
-            if (simonTurn)
+            if (simonPlaySequence)
             {
-                CenterTextHorizontal("Simon Turn", 525.f, 10.f, 40, RED);
+                DrawTextHorizontal("Simon Turn", 525.f, 10.f, 40, RED);
 
                 simonTimeCount += dT;
                 if (animCount == (int)simonListInt.size())
                 {
-                    simonTurn = false;
+                    simonPlaySequence = false;
                     playerTurn = true;
                     animCount = 0;
                 }
@@ -262,7 +248,23 @@ int main()
                     {
                         list<int>::iterator it = simonListInt.begin();
                         advance(it, animCount);
-                        squareList[*it].drawSquare(true, dT);
+
+                        switch (*it)
+                        {
+                        case 0:
+                            yellowSquare.drawSquare(true, dT);
+                            break;
+                        case 1:
+                            blueSquare.drawSquare(true, dT);
+                            break;
+                        case 2:
+                            redSquare.drawSquare(true, dT);
+                            break;
+                        case 3:
+                            greenSquare.drawSquare(true, dT);
+                            break;
+                        }
+
                         simonTimeCount = 0;
                         animCount++;
                     }
@@ -274,7 +276,7 @@ int main()
 
             if (playerTurn)
             {
-                CenterTextHorizontal("Player Turn", 525.f, 10.f, 40, RED);
+                DrawTextHorizontal("Player Turn", 525.f, 10.f, 40, RED);
                 int keyPressed{};
 
                 if (GetKeyPressed())
@@ -311,13 +313,13 @@ int main()
                             if (squareList[*it].keyCodeValue == keyPressed)
                             {
                                 playerPushBtnCount++;
-                                printf("Right key! \n");
+                                // printf("Right key! \n");
 
                                 // "win" path (add extra value to sequence)
                                 if (playerPushBtnCount == (int)simonListInt.size())
                                 {
                                     playerTurn = false;
-                                    simonSort = true;
+                                    simonSortNumber = true;
                                     playerPushBtnCount = 0;
                                     score++;
                                 }
@@ -325,11 +327,12 @@ int main()
                             }
                             else
                             {
-                                printf("Wrong key! \n");
+                                // printf("Wrong key! \n");
                                 playerChances--;
+
                                 // play simon again
                                 playerTurn = false;
-                                simonTurn = true;
+                                simonPlaySequence = true;
                                 playerPushBtnCount = 0;
 
                                 //  player loose path
@@ -338,7 +341,7 @@ int main()
                                     // _sleep lock things, not good
                                     //_sleep(3000);
                                     gameOver = true;
-                                    CenterTextHorizontal("Game Over!", 525.f, 20.f, 40, RED);
+                                    DrawTextHorizontal("Game Over!", 525.f, 20.f, 40, RED);
                                     changeStateDelay += dT;
                                     playerTurn = false;
                                     gameMenuRun = true;
