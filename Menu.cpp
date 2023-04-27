@@ -36,11 +36,12 @@ float Menu::difficultyLevelParameters()
 void Menu::drawMenu()
 {
     // Title
-    centerTextHorizontal("SIMON IS ASKING POLITELY...", 400.f, 50.f - 50.f / 2, 40, RED);
+    centerTextHorizontal("SIMON SAYS CLONE...", 400.f, 50.f - 50.f / 2, 40, RED);
 
     // Instructions
     centerTextHorizontal("Move arrows up and down to select the level of difficult.", 400.f, 120.f - 50.f / 2, 24, BLACK);
     centerTextHorizontal("Push \"Enter\" to start", 400.f, 154.f - 50.f / 2, 24, BLACK);
+    centerTextHorizontal("Push \"esc\" to exit", 400.f, 550.f - 50.f / 2, 24, BLACK);
 
     if (IsKeyPressed(KEY_UP))
     {

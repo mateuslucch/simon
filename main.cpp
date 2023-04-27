@@ -19,7 +19,6 @@ int main()
 {
 
     int totalWindowDimensions[2]{800, 600};
-    // int totalWindowDimensions[2]{1024, 768};
 
     InitWindow(totalWindowDimensions[0], totalWindowDimensions[1], "Simon");
     InitAudioDevice();
@@ -47,13 +46,9 @@ int main()
     // UI
     Color clearBackgroundColor = GRAY;
 
-    // squares common values
     int gap{10};
-    // fixed margins for squares area
     int leftMargin{250};
-    // int rightMargin = 10; // not usefull
     int upMargin{50};
-    // int downMargin = 10; // not usefull
     int squareSize{250};
 
     // SQUARES DATA
@@ -110,7 +105,6 @@ int main()
     // Gamemenu
     Menu gameMenu;
 
-    // Number of player chances
     int maxChances{4};
     int playerChances = maxChances;
     int score{0};
@@ -190,17 +184,22 @@ int main()
                           totalWindowDimensions[1],
                           BLACK);
 
-            // Left block UI
+            /// Left block UI
+            DrawTextHorizontal("Push \"q\" to", 125.f, 50.f, 20, RED);
+            DrawTextHorizontal("go back to menu", 125.f, 75.f, 20, RED);
+            DrawTextHorizontal("Push \"esc\" to", 125.f, 125.f, 20, RED);
+            DrawTextHorizontal("exit game", 125.f, 150.f, 20, RED);
+
             DrawTextHorizontal("Score:", 125.f, 230.f, 25, RED);
             DrawTextHorizontal(TextFormat("%d", score), 125.f, 265.f, 30, RED);
 
             DrawTextHorizontal("Player Chances:", 125.f, 330.f, 25, RED);
             DrawTextHorizontal(TextFormat("%d", playerChances), 125.f, 365.f, 30, RED);
 
-            // end Left block UI
+            /// End Left block UI
 
-            // right block UI and gameplay logic
-            // Draw Squares
+            /// Right block UI and gameplay logic
+
             yellowSquare.drawSquare(false, dT);
             blueSquare.drawSquare(false, dT);
             redSquare.drawSquare(false, dT);
@@ -216,21 +215,12 @@ int main()
 
                 randomValue = rand() % (numberSquares);
 
-                // printf("Adding number to list \n");
                 simonListInt.push_back(randomValue);
-
-                // printf("New list: \n");
-
-                // for (int listValue : simonListInt)
-                // {
-                //     printf("%c \n", squareList[listValue].getKeyValue());
-                // }
 
                 simonSortNumber = false;
                 simonPlaySequence = true;
             }
 
-            // simon play the sequence of numbers, visual feedback
             if (simonPlaySequence)
             {
                 DrawTextHorizontal("Simon Turn", 525.f, 10.f, 40, RED);
@@ -271,9 +261,6 @@ int main()
                 }
             }
 
-            // DrawText(TextFormat("Time:"), 5.f, totalWindowDimensions[1] / 2 + 50.f, 15, RED);
-            // DrawText(TextFormat("%d", (int)simonTimeCount), 40.f, totalWindowDimensions[1] / 2 + 60.f, 30, RED);
-
             if (playerTurn)
             {
                 DrawTextHorizontal("Player Turn", 525.f, 10.f, 40, RED);
@@ -313,7 +300,7 @@ int main()
                             if (squareList[*it].keyCodeValue == keyPressed)
                             {
                                 playerPushBtnCount++;
-                                // printf("Right key! \n");
+                                // printf("Right sequence! \n");
 
                                 // "win" path (add extra value to sequence)
                                 if (playerPushBtnCount == (int)simonListInt.size())
@@ -323,23 +310,18 @@ int main()
                                     playerPushBtnCount = 0;
                                     score++;
                                 }
-                                // put a delay before next round!!
                             }
                             else
                             {
-                                // printf("Wrong key! \n");
+                                // printf("Wrong sequence! \n");
                                 playerChances--;
 
-                                // play simon again
                                 playerTurn = false;
                                 simonPlaySequence = true;
                                 playerPushBtnCount = 0;
 
-                                //  player loose path
                                 if (playerChances == 0)
                                 {
-                                    // _sleep lock things, not good
-                                    //_sleep(3000);
                                     gameOver = true;
                                     DrawTextHorizontal("Game Over!", 525.f, 20.f, 40, RED);
                                     changeStateDelay += dT;
@@ -350,11 +332,10 @@ int main()
                                     simonListInt.clear();
                                     playerPushBtnCount = 0;
                                 }
-                                // delay again to game over
                             }
                         }
                         // exit game
-                        else if (keyPressed == 113) // 113 = "q", not "Q"
+                        else if (keyPressed == 113)
                         {
                             playerTurn = false;
                             gameMenuRun = true;
@@ -362,10 +343,10 @@ int main()
                             simonListInt.clear();
                             playerPushBtnCount = 0;
                         }
-                        // wrong button, but continue game
+
                         else
                         {
-                            printf("Invalid key!\n");
+                            // printf("Invalid key!\n");
                         }
                     }
                 }
